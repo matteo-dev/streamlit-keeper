@@ -1,0 +1,106 @@
+name: Wake Streamlit Apps
+
+on:
+  schedule:
+    # S'exécute toutes les 8 heures (vers 00h, 08h, 16h UTC)
+    - cron: '0 */8 * * *'
+  # Permet de lancer le workflow manuellement depuis l'interface GitHub
+  workflow_dispatch:
+
+jobs:
+  wake-apps:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Playwright & dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install playwright
+          playwright install --with-deps chromium
+
+      - name: Run Streamlit wake script
+        run: |
+          python - << 'EOF'
+          import time
+          import re
+          from playwright.sync_api import sync_playwright
+
+
+          STREAMLIT_URLS = [
+              "https://black-scholes-pricer-portfolio-manager-4tuyubqzkyrlyuzsymn5ay.streamlit.app",
+              "https://optimization-and-ai-in-finance---deribit-options-pricing-hedgi.streamlit.app",
+              "https://projet-ia---deep-learning-option-pricer-deep-hedging-n8nhmvvzx.streamlit.app",
+              "https://mmorpg-market-simulator---big-data-che47ucf8t2wp67yudj6xr.streamlit.app",
+              "https://sophea-high-algorithmic-efficiency-portfolio-optimization-syst.streamlit.app",
+              "https://regtech-hft---spoofing-detection-engine-nhtiyxckrxkfspbmrlefb4.streamlit.app",
+              "https://2honv8fgjbgi6hotukaxem.streamlit.app",
+              " https://financial-data-science-platform-rqrgpqqrgydoapparyg4mjj.streamlit.app",
+          ]
+
+          def wake_app(page, url):
+              print(f"\n==========================================")
+              print(f"🔍 Checking: {url}")
+              print(f"==========================================")
+              
+              try:
+                  # Chargement initial (timeout à 45s)
+                  page.goto(url, wait_until="domcontentloaded", timeout=45000)
+                  time.sleep(6) # Laisser le JavaScript initial s'exécuter
+
+                  content = page.content().lower()
+                  
+                  # Détection de l'état d'hibernation
+                  is_sleeping = (
+                      "this app has gone to sleep" in content 
+                      or "zzzz" in content 
+                      or "get this app back up" in content
+                  )
+
+                  if is_sleeping:
+                      print("💤 Application is asleep. Looking for wake button...")
+                      
+                      # Plusieurs sélecteurs pour couvrir les variations de Streamlit
+                      button = page.get_by_role("button", name=re.compile(r"(yes|get this app back up|wake)", re.IGNORECASE))
+                      
+                      if not button.is_visible():
+                          button = page.locator("button:has-text('Yes, get this app back up')")
+
+                      if button.is_visible():
+                          button.click()
+                          print("⚡ Wake button clicked! Waiting 20s for container initialization...")
+                          time.sleep(20)
+                          print(f"✅ Triggered wake-up successfully for {url}")
+                      else:
+                          print("⚠️ Sleep page detected, but wake button was not interactable.")
+                  else:
+                      print(f"🟢 App appears already active or awake: {url}")
+
+              except Exception as e:
+                  print(f"❌ Error while checking {url}: {e}")
+
+          with sync_playwright() as p:
+              browser = p.chromium.launch(
+                  headless=True,
+                  args=["--no-sandbox", "--disable-dev-shm-usage"]
+              )
+              context = browser.new_context(
+                  user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+              )
+              page = context.new_page()
+
+              for url in STREAMLIT_URLS:
+                  wake_app(page, url)
+
+              browser.close()
+              print("\n🎉 Keep-alive sequence finished.")
+          EOF
