@@ -43,7 +43,8 @@ jobs:
               "https://sophea-high-algorithmic-efficiency-portfolio-optimization-syst.streamlit.app",
               "https://regtech-hft---spoofing-detection-engine-nhtiyxckrxkfspbmrlefb4.streamlit.app",
               "https://2honv8fgjbgi6hotukaxem.streamlit.app",
-              " https://financial-data-science-platform-rqrgpqqrgydoapparyg4mjj.streamlit.app",
+              "https://financial-data-science-platform-rqrgpqqrgydoapparyg4mjj.streamlit.app",
+              "https://credit-scoring-default-risk-prediction-knfbuf5xfsbaiwzzrvwhvn.streamlit.app",
           ]
 
           def wake_app(page, url):
