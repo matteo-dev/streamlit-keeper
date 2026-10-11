@@ -46,6 +46,7 @@ jobs:
               "https://financial-data-science-platform-rqrgpqqrgydoapparyg4mjj.streamlit.app",
               "https://credit-scoring-default-risk-prediction-knfbuf5xfsbaiwzzrvwhvn.streamlit.app",
               "https://truncated-svd-image-recovery.streamlit.app",
+              "https://kaggle-titanic-end-to-end-pipeline.streamlit.app",
           ]
 
           def wake_app(page, url):
