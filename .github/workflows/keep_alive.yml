@@ -49,6 +49,7 @@ jobs:
               "https://truncated-svd-image-recovery.streamlit.app",
               "https://kaggle-titanic-end-to-end-pipeline.streamlit.app",
               "https://auto-insurance-pricing-ml.streamlit.app",
+              "https://time-series-forecasting-monthly-revenue.streamlit.app",
           ]
 
           def wake_app(page, url):
