@@ -36,7 +36,7 @@ jobs:
 
 
           STREAMLIT_URLS = [
-              "https://athletic-performance-management-assistant.streamlit.app",
+              "https://athletic-performance-management-assistant-dev.streamlit.app",
               "https://black-scholes-pricer-portfolio-manager-4tuyubqzkyrlyuzsymn5ay.streamlit.app",
               "https://optimization-and-ai-in-finance---deribit-options-pricing-hedgi.streamlit.app",
               "https://projet-ia---deep-learning-option-pricer-deep-hedging-n8nhmvvzx.streamlit.app",
