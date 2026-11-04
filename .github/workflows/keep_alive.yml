@@ -2,14 +2,14 @@ name: Wake Streamlit Apps
 
 on:
   schedule:
-    # S'exécute toutes les 8 heures (vers 00h, 08h, 16h UTC)
-    - cron: '0 */8 * * *'
+    # S'exécute toutes les 4 heures (00h, 04h, 08h, 12h, 16h, 20h UTC)
+    - cron: '0 */4 * * *'
   # Permet de lancer le workflow manuellement depuis l'interface GitHub
   workflow_dispatch:
 
 jobs:
   wake-apps:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
 
     steps:
@@ -33,7 +33,6 @@ jobs:
           import time
           import re
           from playwright.sync_api import sync_playwright
-
 
           STREAMLIT_URLS = [
               "https://athletic-performance-management-assistant-dev.streamlit.app",
